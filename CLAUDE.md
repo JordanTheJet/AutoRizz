@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-AutoRizz is a prosumer fork of [CellClaw](https://github.com/jordanthejet/cellclaw), an autonomous AI agent for Android. AutoRizz adds cloud auth, credit-based usage, server-proxied LLM requests, and multi-backend support on top of CellClaw's 33-tool agent loop.
+AutoRizz is a dating automation fork of [CellClaw](https://github.com/jordanthejet/cellclaw), an autonomous AI agent for Android. AutoRizz adds dating-specific automation (auto-swiping on Hinge/Tinder/Bumble, AI conversations, date scheduling), cloud auth, credit-based usage, server-proxied LLM requests, and multi-backend support on top of CellClaw's 33-tool agent loop.
 
 - **CellClaw code** lives in `com.cellclaw.*` — treat as upstream, minimize changes
 - **AutoRizz code** lives in `com.autorizz.*` — all new backend/mode/proxy logic
@@ -71,11 +71,12 @@ AutoRizzProviderManager checks ModeManager.currentMode:
 
 This means all CellClaw code that uses `ProviderManagerContract` automatically gets mode-aware routing without modification.
 
-### Three-Tier Hilt Modules
+### Three-Tier Hilt Modules (+ Dating Module)
 
-1. **AppModule** (`com.cellclaw.di`) — CellClaw core: Room DB, 4 LLM providers, ToolRegistry with 34 tools
+1. **AppModule** (`com.cellclaw.di`) — CellClaw core: Room DB, 4 LLM providers, ToolRegistry with 42 tools (34 core + 8 dating)
 2. **AutoRizzModule** (`com.autorizz.di`) — Single binding: `AutoRizzProviderManager → ProviderManagerContract`
-3. **BackendModule** (flavor source set) — 5 backend service bindings, different per flavor
+3. **DatingModule** (`com.autorizz.dating.di`) — DatingDb (Room), 5 DAOs for dating entities
+4. **BackendModule** (flavor source set) — 5 backend service bindings, different per flavor
 
 Only one flavor's BackendModule compiles per build. The manifest points to `com.autorizz.AutoRizzApp` (extends `CellClawApp`, is the `@HiltAndroidApp` root).
 
@@ -117,7 +118,32 @@ Key types in `com.cellclaw.provider`: `Provider` (interface with `complete`/`str
 
 - **Two packages, one module**: `com.cellclaw` (upstream) and `com.autorizz` (fork additions) coexist in the single `:app` module
 - **Namespace is `com.cellclaw`**, applicationId is `com.autorizz` — `BuildConfig` is accessed as `com.cellclaw.BuildConfig`
-- **Adding a tool**: Create in `com.cellclaw.tools`, inject via Hilt, register in `AppModule.provideToolRegistry()`, add approval policy in `AutonomyPolicy`
+- **Adding a tool**: Create in `com.cellclaw.tools` (core) or `com.autorizz.dating.tools` (dating), inject via Hilt, register in `AppModule.provideToolRegistry()`, add approval policy in `AutonomyPolicy`
 - **Adding a backend service**: Define interface in `com.autorizz.backend`, implement in each flavor source set, bind in each flavor's `BackendModule`
 - **ProGuard**: Release builds use R8. kotlinx.serialization and Room entities have keep rules in `proguard-rules.pro`. Add keep rules for any new `@Serializable` classes
 - **Supabase trigger functions** need `SET search_path = public` to work with Supabase's schema isolation
+
+### Dating Layer (`com.autorizz.dating.*`)
+
+The dating automation layer adds 8 tools, 5 Room DB tables, and 4 new UI screens:
+
+```
+com.autorizz.dating/
+├── DatingConfig.kt           # SharedPreferences for dating settings
+├── db/                        # DatingDb Room database (5 entities, 5 DAOs)
+├── prefs/                     # PreferencesRepository, PreferencesEngine (LLM prompt builder)
+├── swipe/                     # SwipeEngine, SwipeStrategy interface, per-app strategies
+│   ├── HingeStrategy.kt      # 8 likes/day, comment-on-like
+│   ├── TinderStrategy.kt     # ~100 swipes, gesture-based
+│   └── BumbleStrategy.kt     # ~25 swipes, women-first
+├── match/                     # MatchRepository, MatchTracker
+├── convo/                     # ConvoManager, ConversationRepository, TimingEngine
+├── date/                      # DateScheduler, DateRepository
+├── paywall/                   # PaywallDetector (premium popup dismissal)
+├── tools/                     # 8 dating tools (dating.prefs.*, dating.match.*, dating.convo.*, dating.date.*)
+├── ui/                        # DashboardScreen, PreferencesScreen, MatchesScreen, DatesScreen, onboarding screens
+├── sync/                      # DatingSyncAdapter (Pro mode cloud sync)
+└── di/                        # DatingModule (Hilt)
+```
+
+Skills in `assets/skills/`: `swipe_session.md`, `check_matches.md`, `message_matches.md`, `check_convos.md`

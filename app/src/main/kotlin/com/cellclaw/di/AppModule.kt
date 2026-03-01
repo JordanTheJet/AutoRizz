@@ -12,6 +12,7 @@ import com.cellclaw.provider.OpenRouterProvider
 import com.cellclaw.provider.ProviderManager
 import com.cellclaw.provider.ProviderManagerContract
 import com.cellclaw.tools.*
+import com.autorizz.dating.tools.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -95,7 +96,16 @@ object AppModule {
         messagingRead: MessagingReadTool,
         messagingReply: MessagingReplyTool,
         heartbeatContext: HeartbeatContextTool,
-        appInstall: AppInstallTool
+        appInstall: AppInstallTool,
+        // Dating tools
+        datingPrefsSet: DatingPrefsSetTool,
+        datingPrefsGet: DatingPrefsGetTool,
+        datingMatchRecord: DatingMatchRecordTool,
+        datingMatchList: DatingMatchListTool,
+        datingMatchUpdate: DatingMatchUpdateTool,
+        datingConvoLog: DatingConvoLogTool,
+        datingConvoHistory: DatingConvoHistoryTool,
+        datingDateSchedule: DatingDateScheduleTool
     ): ToolRegistry {
         return ToolRegistry().apply {
             register(
@@ -119,7 +129,12 @@ object AppModule {
                 schedulerTool,
                 messagingOpen, messagingRead, messagingReply,
                 heartbeatContext,
-                appInstall
+                appInstall,
+                // Dating tools
+                datingPrefsSet, datingPrefsGet,
+                datingMatchRecord, datingMatchList, datingMatchUpdate,
+                datingConvoLog, datingConvoHistory,
+                datingDateSchedule
             )
         }
     }

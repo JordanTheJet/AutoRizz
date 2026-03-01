@@ -34,7 +34,12 @@ class AutonomyPolicy @Inject constructor() {
         "camera.snap", "camera.record", "clipboard.write", "file.write",
         "script.exec", "email.send", "messaging.reply", "schedule.manage",
         "heartbeat.context",
-        "app.install"
+        "app.install",
+        // Dating tools
+        "dating.prefs.set", "dating.prefs.get",
+        "dating.match.record", "dating.match.list", "dating.match.update",
+        "dating.convo.log", "dating.convo.history",
+        "dating.date.schedule"
     )
 
     private val readOps = setOf(
@@ -43,7 +48,12 @@ class AutonomyPolicy @Inject constructor() {
         "sensor.read", "phone.log", "notification.send", "notification.listen",
         "browser.search", "browser.open", "screen.read", "screen.capture",
         "vision.analyze", "messaging.read",
-        "heartbeat.context"
+        "heartbeat.context",
+        // Dating read/write to local DB — safe to auto-approve
+        "dating.prefs.set", "dating.prefs.get",
+        "dating.match.record", "dating.match.list", "dating.match.update",
+        "dating.convo.log", "dating.convo.history"
+        // Note: dating.date.schedule is NOT here — it always asks (requiresApproval = true)
     )
 
     private val appControl = setOf(

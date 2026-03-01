@@ -42,7 +42,7 @@ fun OnboardingScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "AI that controls your phone",
+                text = "AI that gets you dates",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -51,10 +51,10 @@ fun OnboardingScreen(
 
             // Feature bullets
             val features = listOf(
-                "Best AI models, no API key needed",
-                "100 free credits to start",
-                "Choose Fast, Good, or Thinking mode",
-                "Upgrade anytime for more credits"
+                "Auto-swipe on Hinge, Tinder & Bumble",
+                "AI conversations that schedule dates",
+                "Avoids paywalls, maximizes free likes",
+                "100 free credits to start"
             )
             features.forEach { feature ->
                 Row(

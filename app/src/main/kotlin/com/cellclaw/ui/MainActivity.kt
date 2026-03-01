@@ -21,6 +21,9 @@ import com.autorizz.credits.PurchaseService
 import com.autorizz.mode.AutoRizzConfig
 import com.autorizz.mode.ModeManager
 import com.autorizz.mode.Mode
+import com.autorizz.dating.DatingConfig
+import com.autorizz.dating.prefs.PreferencesRepository
+import com.autorizz.dating.ui.*
 import com.autorizz.onboarding.OnboardingScreen
 import com.cellclaw.config.AppConfig
 import com.cellclaw.provider.ProviderManager
@@ -46,6 +49,8 @@ class MainActivity : ComponentActivity() {
     @Inject lateinit var shakeDetector: ShakeDetector
     @Inject lateinit var creditService: com.autorizz.backend.CreditService
     @Inject lateinit var creditManager: com.autorizz.credits.CreditManager
+    @Inject lateinit var datingConfig: DatingConfig
+    @Inject lateinit var prefsRepo: PreferencesRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,7 +93,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     val startDest = when {
-                        appConfig.isSetupComplete -> "chat"
+                        appConfig.isSetupComplete && datingConfig.datingOnboardingComplete -> "dashboard"
+                        appConfig.isSetupComplete -> "app_selection"
                         cellBreakConfig.onboardingComplete -> "setup"
                         else -> "onboarding"
                     }
@@ -137,11 +143,50 @@ class MainActivity : ComponentActivity() {
                                 onComplete = {
                                     appConfig.isSetupComplete = true
                                     startService()
-                                    navController.navigate("chat") {
+                                    navController.navigate("app_selection") {
                                         popUpTo("setup") { inclusive = true }
                                     }
                                 }
                             )
+                        }
+                        composable("app_selection") {
+                            AppSelectionScreen(
+                                datingConfig = datingConfig,
+                                onContinue = {
+                                    navController.navigate("swipe_prefs_setup") {
+                                        popUpTo("app_selection") { inclusive = true }
+                                    }
+                                }
+                            )
+                        }
+                        composable("swipe_prefs_setup") {
+                            SwipePrefsOnboardingScreen(
+                                prefsRepo = prefsRepo,
+                                datingConfig = datingConfig,
+                                onComplete = {
+                                    navController.navigate("dashboard") {
+                                        popUpTo("swipe_prefs_setup") { inclusive = true }
+                                    }
+                                }
+                            )
+                        }
+                        composable("dashboard") {
+                            DashboardScreen(
+                                onNavigateToChat = { navController.navigate("chat") },
+                                onNavigateToPreferences = { navController.navigate("preferences") },
+                                onNavigateToMatches = { navController.navigate("matches") },
+                                onNavigateToDates = { navController.navigate("dates") },
+                                onNavigateToSettings = { navController.navigate("settings") }
+                            )
+                        }
+                        composable("preferences") {
+                            PreferencesScreen(onBack = { navController.popBackStack() })
+                        }
+                        composable("matches") {
+                            MatchesScreen(onBack = { navController.popBackStack() })
+                        }
+                        composable("dates") {
+                            DatesScreen(onBack = { navController.popBackStack() })
                         }
                         composable("chat") {
                             ChatScreen(
