@@ -698,7 +698,7 @@ Same architecture as CellBreak's proxy — a Supabase Edge Function that:
 5. Streams response back
 6. Calculates credit cost and deducts atomically
 
-Same credit pack pricing and model multipliers as CellBreak (see `CELLBREAK-PRD.md` Section 4).
+Same credit pack pricing and model multipliers as CellBreak (see CellBreak PRD Section 4).
 
 ---
 
