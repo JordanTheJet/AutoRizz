@@ -131,6 +131,17 @@ CREATE TABLE scheduled_tasks (
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- Credit packs catalog
+CREATE TABLE credit_packs (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    credits BIGINT NOT NULL,
+    price_usd REAL NOT NULL,
+    stripe_price_id TEXT,
+    active BOOLEAN DEFAULT true,
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
 -- Usage logs
 CREATE TABLE usage_logs (
     id BIGSERIAL PRIMARY KEY,
@@ -154,6 +165,7 @@ ALTER TABLE user_skills ENABLE ROW LEVEL SECURITY;
 ALTER TABLE scheduled_tasks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE usage_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE subscription_plans ENABLE ROW LEVEL SECURITY;
+ALTER TABLE credit_packs ENABLE ROW LEVEL SECURITY;
 
 -- RLS policies: users can only access their own data
 CREATE POLICY "Users own data" ON user_profiles FOR ALL USING (auth.uid() = id);
@@ -165,8 +177,9 @@ CREATE POLICY "Users own data" ON user_settings FOR ALL USING (auth.uid() = user
 CREATE POLICY "Users own data" ON user_skills FOR ALL USING (auth.uid() = user_id);
 CREATE POLICY "Users own data" ON scheduled_tasks FOR ALL USING (auth.uid() = user_id);
 CREATE POLICY "Users own data" ON usage_logs FOR ALL USING (auth.uid() = user_id);
--- Subscription plans are public read
+-- Subscription plans and credit packs are public read
 CREATE POLICY "Anyone can read plans" ON subscription_plans FOR SELECT USING (true);
+CREATE POLICY "Anyone can read packs" ON credit_packs FOR SELECT USING (true);
 
 -- Indexes
 CREATE INDEX idx_credit_transactions_user ON credit_transactions(user_id, created_at DESC);
