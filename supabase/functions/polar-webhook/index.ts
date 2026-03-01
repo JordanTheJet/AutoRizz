@@ -1,16 +1,57 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import Stripe from "https://esm.sh/stripe@17?target=deno";
+import { createHmac } from "https://deno.land/std@0.224.0/crypto/mod.ts";
 
-const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
-  apiVersion: "2024-12-18.acacia",
-});
-
-const endpointSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
+const webhookSecret = Deno.env.get("POLAR_WEBHOOK_SECRET")!;
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
 );
+
+async function verifyWebhookSignature(
+  body: string,
+  headers: Headers
+): Promise<boolean> {
+  // Polar uses standard webhook signature verification
+  const signature = headers.get("webhook-signature");
+  if (!signature) return false;
+
+  // Polar webhook signatures use the standard format: v1,<signature>
+  // Parse timestamp and signature from header
+  const webhookId = headers.get("webhook-id");
+  const webhookTimestamp = headers.get("webhook-timestamp");
+  if (!webhookId || !webhookTimestamp) return false;
+
+  const toSign = `${webhookId}.${webhookTimestamp}.${body}`;
+  const secretBytes = Uint8Array.from(
+    atob(webhookSecret.replace("polar_whs_", "").replace(/whsec_/, "")),
+    (c) => c.charCodeAt(0)
+  );
+
+  const key = await crypto.subtle.importKey(
+    "raw",
+    secretBytes,
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+
+  const signatureBytes = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(toSign));
+  const computedSignature = btoa(
+    String.fromCharCode(...new Uint8Array(signatureBytes))
+  );
+
+  // Compare against all provided signatures (v1,<sig> format)
+  const signatures = signature.split(" ");
+  for (const sig of signatures) {
+    const [version, value] = sig.split(",");
+    if (version === "v1" && value === computedSignature) {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 Deno.serve(async (req) => {
   if (req.method !== "POST") {
@@ -19,36 +60,32 @@ Deno.serve(async (req) => {
 
   try {
     const body = await req.text();
-    let event: Stripe.Event;
 
-    if (endpointSecret) {
-      const sig = req.headers.get("stripe-signature");
-      if (!sig) {
-        return new Response("Missing signature", { status: 400 });
-      }
-      event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
-    } else {
-      event = JSON.parse(body) as Stripe.Event;
+    const verified = await verifyWebhookSignature(body, req.headers);
+    if (!verified) {
+      console.error("Webhook signature verification failed");
+      return new Response("Invalid signature", { status: 403 });
     }
 
-    switch (event.type) {
-      // New subscription created via Checkout
-      case "checkout.session.completed": {
-        const session = event.data.object as Stripe.Checkout.Session;
-        if (session.mode !== "subscription") break;
+    const event = JSON.parse(body);
 
-        const userId = session.metadata?.user_id;
-        const planId = session.metadata?.plan_id;
+    switch (event.type) {
+      // Subscription created or activated
+      case "subscription.created":
+      case "subscription.active": {
+        const sub = event.data;
+        const userId = sub.metadata?.user_id;
+        const planId = sub.metadata?.plan_id;
         if (!userId || !planId) {
-          console.error("Missing metadata in checkout session:", session.id);
+          console.error("Missing metadata in subscription:", sub.id);
           break;
         }
 
         await supabase
           .from("user_profiles")
           .update({
-            stripe_customer_id: session.customer as string,
-            stripe_subscription_id: session.subscription as string,
+            polar_customer_id: sub.customer_id,
+            polar_subscription_id: sub.id,
             subscription_plan: planId,
             subscription_status: "active",
           })
@@ -58,18 +95,13 @@ Deno.serve(async (req) => {
         break;
       }
 
-      // Recurring payment succeeded — reset credits
-      case "invoice.paid": {
-        const invoice = event.data.object as Stripe.Invoice;
-        if (!invoice.subscription) break;
-
-        const subscription = await stripe.subscriptions.retrieve(
-          invoice.subscription as string
-        );
-        const userId = subscription.metadata?.user_id;
-        const planId = subscription.metadata?.plan_id;
+      // Order paid — reset credits
+      case "order.paid": {
+        const order = event.data;
+        const userId = order.metadata?.user_id;
+        const planId = order.metadata?.plan_id;
         if (!userId || !planId) {
-          console.error("Missing metadata on subscription:", subscription.id);
+          console.error("Missing metadata in order:", order.id);
           break;
         }
 
@@ -77,22 +109,22 @@ Deno.serve(async (req) => {
         const { data: existing } = await supabase
           .from("credit_transactions")
           .select("id")
-          .eq("stripe_payment_id", invoice.id)
+          .eq("polar_order_id", order.id)
           .limit(1);
 
         if (existing && existing.length > 0) {
-          console.log("Invoice already processed:", invoice.id);
+          console.log("Order already processed:", order.id);
           break;
         }
 
-        const periodStart = new Date(
-          subscription.current_period_start * 1000
-        ).toISOString();
+        const now = new Date();
+        const periodStart = now.toISOString();
         const periodEnd = new Date(
-          subscription.current_period_end * 1000
+          now.getFullYear(),
+          now.getMonth() + 1,
+          now.getDate()
         ).toISOString();
 
-        // Reset credits with rollover
         const { data: newBalance, error } = await supabase.rpc(
           "reset_subscription_credits",
           {
@@ -108,10 +140,10 @@ Deno.serve(async (req) => {
           break;
         }
 
-        // Mark transaction with invoice ID for idempotency
+        // Mark for idempotency
         await supabase
           .from("credit_transactions")
-          .update({ stripe_payment_id: invoice.id })
+          .update({ polar_order_id: order.id })
           .eq("user_id", userId)
           .eq("type", "subscription")
           .order("created_at", { ascending: false })
@@ -123,24 +155,20 @@ Deno.serve(async (req) => {
         break;
       }
 
-      // Subscription updated (upgrade/downgrade/cancel-at-period-end)
-      case "customer.subscription.updated": {
-        const subscription = event.data.object as Stripe.Subscription;
-        const userId = subscription.metadata?.user_id;
-        const planId = subscription.metadata?.plan_id;
+      // Subscription updated
+      case "subscription.updated": {
+        const sub = event.data;
+        const userId = sub.metadata?.user_id;
+        const planId = sub.metadata?.plan_id;
         if (!userId) break;
 
-        // cancel_at_period_end = user canceled but keeps access until period ends
-        // Credits stay intact; they expire only when subscription.deleted fires
         let subscriptionStatus: string;
-        if (subscription.cancel_at_period_end) {
+        if (sub.cancel_at_period_end) {
           subscriptionStatus = "canceling";
-        } else if (subscription.status === "active") {
+        } else if (sub.status === "active") {
           subscriptionStatus = "active";
-        } else if (subscription.status === "past_due") {
-          subscriptionStatus = "past_due";
         } else {
-          subscriptionStatus = "canceled";
+          subscriptionStatus = sub.status || "active";
         }
 
         await supabase
@@ -148,12 +176,6 @@ Deno.serve(async (req) => {
           .update({
             subscription_plan: planId || "free",
             subscription_status: subscriptionStatus,
-            current_period_start: new Date(
-              subscription.current_period_start * 1000
-            ).toISOString(),
-            current_period_end: new Date(
-              subscription.current_period_end * 1000
-            ).toISOString(),
           })
           .eq("id", userId);
 
@@ -163,13 +185,13 @@ Deno.serve(async (req) => {
         break;
       }
 
-      // Subscription canceled — expire paid credits, downgrade to free
-      case "customer.subscription.deleted": {
-        const subscription = event.data.object as Stripe.Subscription;
-        const userId = subscription.metadata?.user_id;
+      // Subscription canceled or revoked
+      case "subscription.canceled":
+      case "subscription.revoked": {
+        const sub = event.data;
+        const userId = sub.metadata?.user_id;
         if (!userId) break;
 
-        // Look up free plan allocation
         const { data: freePlan } = await supabase
           .from("subscription_plans")
           .select("monthly_credits")
@@ -183,13 +205,12 @@ Deno.serve(async (req) => {
           .update({
             subscription_plan: "free",
             subscription_status: "canceled",
-            stripe_subscription_id: null,
+            polar_subscription_id: null,
             credit_balance: freeCredits,
             rollover_credits: 0,
           })
           .eq("id", userId);
 
-        // Log the credit expiration
         await supabase.from("credit_transactions").insert({
           user_id: userId,
           type: "expiration",

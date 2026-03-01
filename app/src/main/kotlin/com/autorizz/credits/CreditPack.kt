@@ -5,7 +5,7 @@ data class SubscriptionPlan(
     val name: String,
     val monthlyCredits: Long,
     val priceUsd: Double,
-    val stripePriceId: String?,
+    val polarProductId: String?,
     val aiModes: List<AiMode>
 ) {
     val priceDisplay: String
@@ -30,9 +30,9 @@ enum class AiMode(val id: String, val displayName: String, val description: Stri
 
 val SUBSCRIPTION_PLANS = listOf(
     SubscriptionPlan("free", "Free", 100, 0.0, null, listOf(AiMode.FAST, AiMode.THINKING)),
-    SubscriptionPlan("starter", "Starter", 1_000, 4.99, "price_1T5tVfQWWPsMEhJU15QWTGXI", listOf(AiMode.FAST, AiMode.THINKING)),
-    SubscriptionPlan("pro", "Pro", 10_000, 19.99, "price_1T5tVmQWWPsMEhJUC8ntvGR9", listOf(AiMode.FAST, AiMode.THINKING)),
-    SubscriptionPlan("ultra", "Ultra", 100_000, 99.00, "price_1T5tVoQWWPsMEhJUvhyRgsVV", listOf(AiMode.FAST, AiMode.THINKING))
+    SubscriptionPlan("starter", "Starter", 1_000, 4.99, "d6ca4d91-9857-41ba-bb9f-036c305ca35e", listOf(AiMode.FAST, AiMode.THINKING)),
+    SubscriptionPlan("pro", "Pro", 10_000, 19.99, "b1d359a5-1af9-43df-860d-328d9633e6c3", listOf(AiMode.FAST, AiMode.THINKING)),
+    SubscriptionPlan("ultra", "Ultra", 100_000, 99.00, "31f47752-8f15-4c37-9b98-2b223bbd5569", listOf(AiMode.FAST, AiMode.THINKING))
 )
 
 fun planForId(id: String): SubscriptionPlan =

@@ -39,7 +39,7 @@ class PurchaseService @Inject constructor(
     private val json = Json { ignoreUnknownKeys = true }
 
     /**
-     * Creates a Stripe Checkout Session for a subscription plan.
+     * Creates a Polar Checkout Session for a subscription plan.
      * Returns a URL to open in the browser.
      */
     suspend fun createSubscriptionCheckout(plan: SubscriptionPlan): PurchaseResult = withContext(Dispatchers.IO) {
@@ -53,7 +53,7 @@ class PurchaseService @Inject constructor(
 
             val body = """{"plan_id":"${plan.id}"}"""
             val request = Request.Builder()
-                .url("${BuildConfig.SUPABASE_URL}/functions/v1/stripe-checkout")
+                .url("${BuildConfig.SUPABASE_URL}/functions/v1/polar-checkout")
                 .addHeader("Authorization", "Bearer $token")
                 .addHeader("Content-Type", "application/json")
                 .post(body.toRequestBody("application/json".toMediaType()))
@@ -77,7 +77,7 @@ class PurchaseService @Inject constructor(
     }
 
     /**
-     * Called after returning from Stripe checkout to refresh the credit balance.
+     * Called after returning from Polar checkout to refresh the credit balance.
      */
     suspend fun refreshAfterPurchase() {
         val userId = authManager.currentUser()?.id ?: return

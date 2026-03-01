@@ -22,6 +22,7 @@ export const SUBSCRIPTION_PLANS = [
     priceUsd: 4.99,
     priceDisplay: "$4.99/mo",
     aiModes: ["fast", "thinking"],
+    polarProductId: "d6ca4d91-9857-41ba-bb9f-036c305ca35e",
   },
   {
     id: "pro",
@@ -31,6 +32,7 @@ export const SUBSCRIPTION_PLANS = [
     priceDisplay: "$19.99/mo",
     aiModes: ["fast", "thinking"],
     recommended: true,
+    polarProductId: "b1d359a5-1af9-43df-860d-328d9633e6c3",
   },
   {
     id: "ultra",
@@ -39,6 +41,7 @@ export const SUBSCRIPTION_PLANS = [
     priceUsd: 99.0,
     priceDisplay: "$99/mo",
     aiModes: ["fast", "thinking"],
+    polarProductId: "31f47752-8f15-4c37-9b98-2b223bbd5569",
   },
 ] as const;
 

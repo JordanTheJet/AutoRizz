@@ -23,7 +23,7 @@ function CreditsContent() {
 
   function handleSubscribe(planId: string) {
     const plan = SUBSCRIPTION_PLANS.find((p) => p.id === planId);
-    if (!plan || !plan.polarProductId || !user) {
+    if (!plan || !("polarProductId" in plan) || !user) {
       setError("Unable to start checkout");
       return;
     }
@@ -36,8 +36,14 @@ function CreditsContent() {
       plan_id: plan.id,
     });
 
+    const polarProductId = "polarProductId" in plan ? plan.polarProductId : null;
+    if (!polarProductId) {
+      setError("Unable to start checkout");
+      return;
+    }
+
     const params = new URLSearchParams({
-      products: plan.polarProductId,
+      products: polarProductId,
       metadata,
       ...(user.email ? { customerEmail: user.email } : {}),
     });
