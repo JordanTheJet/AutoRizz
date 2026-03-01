@@ -1,0 +1,53 @@
+package com.cellclaw
+
+import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+/**
+ * Base application class for CellClaw. In the AutoRizz fork,
+ * AutoRizzApp extends this and is the @HiltAndroidApp root.
+ */
+open class CellClawApp : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+        createNotificationChannels()
+    }
+
+    private fun createNotificationChannels() {
+        val manager = getSystemService(NotificationManager::class.java)
+
+        val serviceChannel = NotificationChannel(
+            CHANNEL_SERVICE,
+            getString(R.string.notification_channel_service),
+            NotificationManager.IMPORTANCE_LOW
+        ).apply {
+            description = "AutoRizz background service status"
+            setShowBadge(false)
+        }
+
+        val approvalChannel = NotificationChannel(
+            CHANNEL_APPROVALS,
+            getString(R.string.notification_channel_approvals),
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply {
+            description = "Tool execution approval requests"
+        }
+
+        val alertChannel = NotificationChannel(
+            CHANNEL_ALERTS,
+            getString(R.string.notification_channel_alerts),
+            NotificationManager.IMPORTANCE_DEFAULT
+        ).apply {
+            description = "General alerts and notifications"
+        }
+
+        manager.createNotificationChannels(listOf(serviceChannel, approvalChannel, alertChannel))
+    }
+
+    companion object {
+        const val CHANNEL_SERVICE = "cellclaw_service"
+        const val CHANNEL_APPROVALS = "cellclaw_approvals"
+        const val CHANNEL_ALERTS = "cellclaw_alerts"
+    }
+}
