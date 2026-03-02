@@ -3,9 +3,10 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
-  // Force HTTPS in production
+  // Force HTTPS in production (skip for localhost dev)
+  const host = request.headers.get("host") || "";
   const proto = request.headers.get("x-forwarded-proto");
-  if (proto === "http") {
+  if (proto === "http" && !host.startsWith("localhost") && !host.startsWith("127.0.0.1")) {
     const url = new URL(request.url);
     url.protocol = "https:";
     return NextResponse.redirect(url, 301);
