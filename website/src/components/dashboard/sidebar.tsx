@@ -27,10 +27,10 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
             href={item.href}
             onClick={onNavigate}
             className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm",
+              "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm",
               active
-                ? "bg-brand-50 font-medium text-brand-600"
-                : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                ? "bg-ink font-semibold text-white"
+                : "text-ink-light hover:bg-surface-alt hover:text-ink"
             )}
           >
             <svg
@@ -56,11 +56,11 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
 
 function SidebarFooter({ email, onSignOut }: { email: string; onSignOut: () => void }) {
   return (
-    <div className="border-t border-gray-200 p-4">
-      <p className="mb-2 truncate text-xs text-gray-500">{email}</p>
+    <div className="border-t border-ink/5 p-4">
+      <p className="mb-2 truncate text-xs text-ink-muted">{email}</p>
       <button
         onClick={onSignOut}
-        className="w-full rounded-lg bg-gray-100 px-3 py-2 text-sm text-gray-600 hover:bg-gray-200"
+        className="w-full rounded-xl bg-ink/5 px-3 py-2 text-sm font-medium text-ink-light hover:bg-ink/10"
       >
         Sign Out
       </button>
@@ -78,13 +78,11 @@ export function DashboardShell({
   const [drawerOpen, setDrawerOpen] = useState(false);
   const router = useRouter();
 
-  // Close drawer on route change
   const pathname = usePathname();
   useEffect(() => {
     setDrawerOpen(false);
   }, [pathname]);
 
-  // Lock body scroll when drawer is open
   useEffect(() => {
     if (drawerOpen) {
       document.body.style.overflow = "hidden";
@@ -104,11 +102,11 @@ export function DashboardShell({
   }
 
   return (
-    <div className="flex h-screen">
-      {/* Desktop sidebar - hidden on mobile/tablet */}
-      <aside className="hidden h-full w-64 shrink-0 flex-col border-r border-gray-200 bg-gray-50 lg:flex">
-        <div className="border-b border-gray-200 px-6 py-4">
-          <Link href="/" className="text-lg font-bold text-brand-500">
+    <div className="flex h-screen bg-page">
+      {/* Desktop sidebar */}
+      <aside className="hidden h-full w-64 shrink-0 flex-col bg-surface lg:flex">
+        <div className="px-6 py-5">
+          <Link href="/" className="text-lg font-extrabold text-ink">
             AutoRizz
           </Link>
         </div>
@@ -116,46 +114,45 @@ export function DashboardShell({
         <SidebarFooter email={email} onSignOut={handleSignOut} />
       </aside>
 
-      {/* Mobile/tablet header */}
-      <div className="fixed top-0 right-0 left-0 z-40 flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3 lg:hidden">
+      {/* Mobile header */}
+      <div className="fixed top-0 right-0 left-0 z-40 flex items-center justify-between bg-surface px-4 py-3 lg:hidden">
         <button
           onClick={() => setDrawerOpen(true)}
-          className="rounded-lg p-1.5 text-gray-600 hover:bg-gray-100"
+          className="rounded-xl p-1.5 text-ink hover:bg-surface-alt"
           aria-label="Open menu"
         >
           <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
           </svg>
         </button>
-        <Link href="/" className="text-lg font-bold text-brand-500">
+        <Link href="/" className="text-lg font-extrabold text-ink">
           AutoRizz
         </Link>
-        {/* Spacer for centering */}
         <div className="w-9" />
       </div>
 
-      {/* Mobile/tablet drawer overlay */}
+      {/* Mobile drawer overlay */}
       {drawerOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black/40 lg:hidden"
+          className="fixed inset-0 z-50 bg-black/30 lg:hidden"
           onClick={() => setDrawerOpen(false)}
         />
       )}
 
-      {/* Mobile/tablet drawer */}
+      {/* Mobile drawer */}
       <aside
         className={cn(
-          "fixed top-0 left-0 z-50 flex h-full w-72 flex-col bg-white shadow-xl transition-transform duration-200 ease-in-out lg:hidden",
+          "fixed top-0 left-0 z-50 flex h-full w-72 flex-col bg-surface shadow-xl transition-transform duration-200 ease-in-out lg:hidden",
           drawerOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
-          <Link href="/" className="text-lg font-bold text-brand-500">
+        <div className="flex items-center justify-between px-4 py-4">
+          <Link href="/" className="text-lg font-extrabold text-ink">
             AutoRizz
           </Link>
           <button
             onClick={() => setDrawerOpen(false)}
-            className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            className="rounded-xl p-1.5 text-ink-muted hover:bg-surface-alt hover:text-ink"
             aria-label="Close menu"
           >
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -168,7 +165,7 @@ export function DashboardShell({
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-y-auto bg-white pt-14 lg:pt-0">
+      <main className="flex-1 overflow-y-auto pt-14 lg:pt-0">
         <div className="p-4 sm:p-6 lg:p-8">
           {children}
         </div>

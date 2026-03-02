@@ -4,18 +4,19 @@ export function DownloadCta() {
   const apkUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/apk-releases/autorizz-v${APP_VERSION}.apk`;
 
   return (
-    <section id="download" className="bg-white py-20">
-      <div className="mx-auto max-w-6xl px-6">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold text-gray-900">Get AutoRizz</h2>
-          <p className="mt-3 text-gray-500">
-            Download the APK and install it on your Android device. No Play
-            Store required.
+    <section id="download" className="px-4 py-6 md:px-6">
+      <div className="mx-auto max-w-6xl">
+        <div className="rounded-3xl bg-ink px-8 py-16 text-center md:px-16 md:py-20">
+          <h2 className="text-4xl font-extrabold tracking-tight text-white md:text-5xl">
+            Ready to rizz?
+          </h2>
+          <p className="mx-auto mt-4 max-w-md text-lg text-white/60">
+            Download the APK and install on your Android. No Play Store required.
           </p>
 
           <a
             href={apkUrl}
-            className="mt-8 inline-flex items-center gap-2 rounded-lg bg-brand-500 px-8 py-3.5 text-sm font-semibold text-white shadow-lg hover:bg-brand-600"
+            className="mt-10 inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-sm font-bold text-ink hover:bg-white/90"
           >
             <svg
               className="h-5 w-5"
@@ -33,15 +34,13 @@ export function DownloadCta() {
             Download APK v{APP_VERSION}
           </a>
 
-          <div className="mt-4 flex items-center justify-center gap-6 text-xs text-gray-400">
-            <span>Android 8.0+ (API 26)</span>
+          <div className="mt-6 flex items-center justify-center gap-6 text-xs text-white/40">
+            <span>Android 8.0+</span>
+            <span className="h-1 w-1 rounded-full bg-white/20" />
             <span>~25 MB</span>
+            <span className="h-1 w-1 rounded-full bg-white/20" />
             <span>No root required</span>
           </div>
-
-          <p className="mt-6 text-xs text-gray-400">
-            Coming soon to Google Play Store.
-          </p>
         </div>
       </div>
     </section>

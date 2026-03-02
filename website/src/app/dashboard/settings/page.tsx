@@ -68,20 +68,20 @@ export default function SettingsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900">Account Settings</h1>
-      <p className="mt-1 text-sm text-gray-500">Manage your profile.</p>
+      <h1 className="text-2xl font-extrabold text-ink">Account Settings</h1>
+      <p className="mt-1 text-sm text-ink-light">Manage your profile.</p>
 
       <form
         onSubmit={handleSave}
-        className="mt-6 max-w-lg space-y-4 rounded-xl border border-gray-200 bg-white p-6"
+        className="mt-6 max-w-lg space-y-4 rounded-2xl bg-surface p-6"
       >
         {saved && (
-          <div className="rounded-lg bg-green-50 p-3 text-sm text-green-700">
+          <div className="rounded-xl bg-accent-green/20 p-3 text-sm font-medium text-ink">
             Settings saved.
           </div>
         )}
         {error && (
-          <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600">
+          <div className="rounded-xl bg-accent-coral/20 p-3 text-sm text-ink">
             {error}
           </div>
         )}
@@ -89,7 +89,7 @@ export default function SettingsPage() {
         <div>
           <label
             htmlFor="displayName"
-            className="mb-1 block text-sm font-medium text-gray-700"
+            className="mb-1.5 block text-sm font-medium text-ink"
           >
             Display Name
           </label>
@@ -98,14 +98,14 @@ export default function SettingsPage() {
             type="text"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="w-full rounded-xl border border-ink/10 bg-white px-4 py-2.5 text-sm text-ink focus:border-ink/30 focus:outline-none focus:ring-2 focus:ring-ink/10"
             placeholder="Your name"
           />
         </div>
 
         {referralCode && (
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1.5 block text-sm font-medium text-ink">
               Referral Code
             </label>
             <div className="flex gap-2">
@@ -113,12 +113,12 @@ export default function SettingsPage() {
                 type="text"
                 value={referralCode}
                 readOnly
-                className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-500"
+                className="w-full rounded-xl border border-ink/10 bg-white/60 px-4 py-2.5 text-sm text-ink-muted"
               />
               <button
                 type="button"
                 onClick={() => navigator.clipboard.writeText(referralCode)}
-                className="shrink-0 rounded-lg bg-gray-100 px-3 py-2 text-sm text-gray-600 hover:bg-gray-200"
+                className="shrink-0 rounded-xl bg-ink/5 px-4 py-2.5 text-sm font-medium text-ink hover:bg-ink/10"
               >
                 Copy
               </button>
@@ -129,20 +129,20 @@ export default function SettingsPage() {
         <button
           type="submit"
           disabled={loading}
-          className="rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white hover:bg-brand-600 disabled:opacity-50"
+          className="rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-white hover:bg-ink/80 disabled:opacity-50"
         >
           {loading ? "Saving..." : "Save Changes"}
         </button>
       </form>
 
-      <div className="mt-8 max-w-lg rounded-xl border border-red-200 bg-red-50/50 p-6">
-        <h2 className="text-sm font-semibold text-red-700">Danger Zone</h2>
-        <p className="mt-1 text-sm text-red-600/70">
+      <div className="mt-8 max-w-lg rounded-2xl bg-accent-coral/10 p-6">
+        <h2 className="text-sm font-bold text-ink">Danger Zone</h2>
+        <p className="mt-1 text-sm text-ink-light">
           Sign out of your account on this device.
         </p>
         <button
           onClick={handleSignOut}
-          className="mt-4 rounded-lg bg-red-100 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-200"
+          className="mt-4 rounded-full bg-accent-coral/30 px-5 py-2.5 text-sm font-semibold text-ink hover:bg-accent-coral/50"
         >
           Sign Out
         </button>

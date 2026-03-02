@@ -44,18 +44,18 @@ export default function SignUpPage() {
 
   if (success) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+      <div className="flex min-h-screen items-center justify-center bg-page px-4">
         <div className="w-full max-w-md text-center">
-          <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-sm">
+          <div className="rounded-2xl bg-surface p-8">
             <div className="mb-4 text-4xl">&#9993;</div>
-            <h1 className="mb-2 text-xl font-semibold text-gray-900">
+            <h1 className="mb-2 text-xl font-bold text-ink">
               Check your email
             </h1>
-            <p className="mb-4 text-sm text-gray-600">
+            <p className="mb-4 text-sm text-ink-light">
               We sent a confirmation link to <strong>{email}</strong>. Click it
               to activate your account.
             </p>
-            <p className="text-sm text-brand-500">
+            <p className="text-sm font-semibold text-accent-green">
               You&apos;ll get 100 welcome credits on your first sign-in!
             </p>
           </div>
@@ -65,26 +65,26 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-page px-4">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <Link href="/" className="text-2xl font-bold text-brand-500">
+          <Link href="/" className="text-2xl font-extrabold text-ink">
             AutoRizz
           </Link>
-          <h1 className="mt-4 text-2xl font-semibold text-gray-900">
+          <h1 className="mt-4 text-2xl font-bold text-ink">
             Create your account
           </h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-ink-light">
             Get 100 free credits when you sign up
           </p>
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="rounded-xl border border-gray-200 bg-white p-8 shadow-sm"
+          className="rounded-2xl bg-surface p-8"
         >
           {error && (
-            <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-600">
+            <div className="mb-4 rounded-xl bg-accent-coral/20 p-3 text-sm text-ink">
               {error}
             </div>
           )}
@@ -92,7 +92,7 @@ export default function SignUpPage() {
           <div className="mb-4">
             <label
               htmlFor="email"
-              className="mb-1 block text-sm font-medium text-gray-700"
+              className="mb-1.5 block text-sm font-medium text-ink"
             >
               Email
             </label>
@@ -102,7 +102,7 @@ export default function SignUpPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+              className="w-full rounded-xl border border-ink/10 bg-white px-4 py-2.5 text-sm text-ink focus:border-ink/30 focus:outline-none focus:ring-2 focus:ring-ink/10"
               placeholder="you@example.com"
             />
           </div>
@@ -110,7 +110,7 @@ export default function SignUpPage() {
           <div className="mb-4">
             <label
               htmlFor="password"
-              className="mb-1 block text-sm font-medium text-gray-700"
+              className="mb-1.5 block text-sm font-medium text-ink"
             >
               Password
             </label>
@@ -121,7 +121,7 @@ export default function SignUpPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+              className="w-full rounded-xl border border-ink/10 bg-white px-4 py-2.5 text-sm text-ink focus:border-ink/30 focus:outline-none focus:ring-2 focus:ring-ink/10"
               placeholder="Min 6 characters"
             />
           </div>
@@ -129,7 +129,7 @@ export default function SignUpPage() {
           <div className="mb-6">
             <label
               htmlFor="confirmPassword"
-              className="mb-1 block text-sm font-medium text-gray-700"
+              className="mb-1.5 block text-sm font-medium text-ink"
             >
               Confirm Password
             </label>
@@ -140,7 +140,7 @@ export default function SignUpPage() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+              className="w-full rounded-xl border border-ink/10 bg-white px-4 py-2.5 text-sm text-ink focus:border-ink/30 focus:outline-none focus:ring-2 focus:ring-ink/10"
               placeholder="••••••••"
             />
           </div>
@@ -148,16 +148,16 @@ export default function SignUpPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 disabled:opacity-50"
+            className="w-full rounded-full bg-ink px-4 py-3 text-sm font-semibold text-white hover:bg-ink/80 disabled:opacity-50"
           >
             {loading ? "Creating account..." : "Create Account"}
           </button>
 
-          <p className="mt-4 text-center text-sm text-gray-600">
+          <p className="mt-4 text-center text-sm text-ink-light">
             Already have an account?{" "}
             <Link
               href="/sign-in"
-              className="font-medium text-brand-500 hover:text-brand-600"
+              className="font-semibold text-ink hover:underline"
             >
               Sign In
             </Link>

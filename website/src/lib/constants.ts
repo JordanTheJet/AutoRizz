@@ -1,9 +1,9 @@
 export const BRAND = {
   name: "AutoRizz",
   tagline: "Autonomous AI Agent for Android",
-  primary: "#1565C0",
-  primaryDark: "#0D47A1",
-  primaryLight: "#42A5F5",
+  primary: "#1A1A1A",
+  primaryDark: "#000000",
+  primaryLight: "#6B6B6B",
 } as const;
 
 export const SUBSCRIPTION_PLANS = [

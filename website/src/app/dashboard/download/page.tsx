@@ -5,15 +5,15 @@ export default function DownloadPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900">Download AutoRizz</h1>
-      <p className="mt-1 text-sm text-gray-500">
+      <h1 className="text-2xl font-extrabold text-ink">Download AutoRizz</h1>
+      <p className="mt-1 text-sm text-ink-light">
         Get the latest version of AutoRizz for Android.
       </p>
 
-      <div className="mt-8 max-w-lg rounded-xl border border-gray-200 bg-white p-8 text-center">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50">
+      <div className="mt-8 max-w-lg rounded-2xl bg-surface p-8 text-center">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-blue/30">
           <svg
-            className="h-8 w-8 text-brand-500"
+            className="h-8 w-8 text-ink"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -27,13 +27,13 @@ export default function DownloadPage() {
           </svg>
         </div>
 
-        <h2 className="text-lg font-semibold text-gray-900">
+        <h2 className="text-lg font-bold text-ink">
           AutoRizz v{APP_VERSION}
         </h2>
 
         <a
           href={apkUrl}
-          className="mt-4 inline-flex items-center gap-2 rounded-lg bg-brand-500 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-600"
+          className="mt-4 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-white hover:bg-ink/80"
         >
           <svg
             className="h-4 w-4"
@@ -51,36 +51,35 @@ export default function DownloadPage() {
           Download APK
         </a>
 
-        <div className="mt-6 space-y-2 text-sm text-gray-500">
+        <div className="mt-6 space-y-1 text-sm text-ink-muted">
           <p>Android 8.0+ (API 26) required</p>
           <p>No root access needed</p>
         </div>
       </div>
 
       <div className="mt-8 max-w-lg">
-        <h2 className="mb-3 text-sm font-semibold text-gray-700">
+        <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-ink-muted">
           Installation Instructions
         </h2>
-        <ol className="space-y-2 text-sm text-gray-600">
-          <li className="flex gap-2">
-            <span className="font-medium text-brand-500">1.</span>
+        <ol className="space-y-2 text-sm text-ink-light">
+          <li className="flex gap-3">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ink text-xs font-bold text-white">1</span>
             Download the APK file to your Android device
           </li>
-          <li className="flex gap-2">
-            <span className="font-medium text-brand-500">2.</span>
-            Open the file &mdash; you may need to allow installs from unknown
-            sources
+          <li className="flex gap-3">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ink text-xs font-bold text-white">2</span>
+            Open the file &mdash; you may need to allow installs from unknown sources
           </li>
-          <li className="flex gap-2">
-            <span className="font-medium text-brand-500">3.</span>
+          <li className="flex gap-3">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ink text-xs font-bold text-white">3</span>
             Tap &quot;Install&quot; and wait for the installation to complete
           </li>
-          <li className="flex gap-2">
-            <span className="font-medium text-brand-500">4.</span>
+          <li className="flex gap-3">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ink text-xs font-bold text-white">4</span>
             Open AutoRizz and grant the required permissions
           </li>
-          <li className="flex gap-2">
-            <span className="font-medium text-brand-500">5.</span>
+          <li className="flex gap-3">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ink text-xs font-bold text-white">5</span>
             Sign in with the same account you created on this website
           </li>
         </ol>

@@ -16,8 +16,8 @@ export default async function TransactionsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900">Transaction History</h1>
-      <p className="mt-1 text-sm text-gray-500">
+      <h1 className="text-2xl font-extrabold text-ink">Transaction History</h1>
+      <p className="mt-1 text-sm text-ink-light">
         Credit purchases, usage, and bonuses.
       </p>
 
@@ -34,24 +34,24 @@ export default async function TransactionsPage() {
             }) => (
               <div
                 key={tx.id}
-                className="flex items-center justify-between rounded-lg border border-gray-100 px-4 py-3"
+                className="flex items-center justify-between rounded-xl bg-surface px-4 py-3"
               >
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-gray-900">
+                  <p className="text-sm font-medium text-ink">
                     {friendlyDescription(tx.description)}
                   </p>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-ink-muted">
                     {formatDate(tx.created_at)}
                   </p>
                 </div>
                 <div className="ml-4 shrink-0 text-right">
                   <p
-                    className={`text-sm font-semibold ${tx.amount > 0 ? "text-green-600" : "text-gray-600"}`}
+                    className={`text-sm font-bold ${tx.amount > 0 ? "text-accent-green" : "text-ink-light"}`}
                   >
                     {tx.amount > 0 ? "+" : ""}
                     {formatCredits(Math.abs(tx.amount))}
                   </p>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-ink-muted">
                     bal {formatCredits(tx.balance_after)}
                   </p>
                 </div>
@@ -60,8 +60,8 @@ export default async function TransactionsPage() {
           )}
         </div>
       ) : (
-        <div className="mt-6 rounded-lg border border-gray-200 bg-gray-50 p-8 text-center">
-          <p className="text-sm text-gray-400">No transactions yet.</p>
+        <div className="mt-6 rounded-2xl bg-surface p-8 text-center">
+          <p className="text-sm text-ink-muted">No transactions yet.</p>
         </div>
       )}
     </div>
