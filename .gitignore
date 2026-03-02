@@ -17,6 +17,8 @@ local.properties
 *.png
 *.jpg
 *.jpeg
+*.JPG
+!website/public/**
 .env
 .env.*
 !.env.*.example
