@@ -4,6 +4,15 @@ import { useState, useEffect, useCallback } from "react";
 
 const PROFILES = [
   {
+    name: "Unc",
+    age: 48,
+    bio: "Too old for dis shi",
+    gradient: "from-rose-300 to-pink-400",
+    emoji: "🎨",
+    image: "/unc.jpeg",
+    distance: "2 miles away",
+  },
+  {
     name: "Sophie",
     age: 24,
     bio: "Coffee addict. Dog mom. Let's go on an adventure",
