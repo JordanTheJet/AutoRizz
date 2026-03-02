@@ -9,7 +9,7 @@ const PROFILES = [
     bio: "Coffee addict. Dog mom. Let's go on an adventure",
     gradient: "from-rose-300 to-pink-400",
     emoji: "🎨",
-    image: null as string | null,
+    image: "/stock3.jpg",
     distance: "2 miles away",
   },
 
@@ -29,7 +29,7 @@ const PROFILES = [
     bio: "Startup founder by day, salsa dancer by night",
     gradient: "from-teal-200 to-emerald-300",
     emoji: "💃",
-    image: null as string | null,
+    image: "/stock2.jpg",
     distance: "1 mile away",
   },
   {
@@ -47,7 +47,7 @@ const PROFILES = [
     bio: "Looking for someone to split appetizers with",
     gradient: "from-sky-200 to-blue-300",
     emoji: "✈️",
-    image: null as string | null,
+    image: "/stock1.jpg",
     distance: "4 miles away",
   },
 ];
