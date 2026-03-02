@@ -3,6 +3,14 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
+  // Force HTTPS in production
+  const proto = request.headers.get("x-forwarded-proto");
+  if (proto === "http") {
+    const url = new URL(request.url);
+    url.protocol = "https:";
+    return NextResponse.redirect(url, 301);
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(

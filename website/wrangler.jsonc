@@ -4,6 +4,10 @@
   "name": "autorizz-app",
   "compatibility_date": "2024-12-30",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "routes": [
+    { "pattern": "autorizz.lol/*", "zone_name": "autorizz.lol" },
+    { "pattern": "www.autorizz.lol/*", "zone_name": "autorizz.lol" }
+  ],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"

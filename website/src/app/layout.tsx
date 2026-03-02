@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     title: "AutoRizz",
     description:
       "Autonomous AI agent for Android. No other hardware required.",
-    url: "https://autorizz.app",
+    url: "https://autorizz.lol",
     siteName: "AutoRizz",
     type: "website",
   },

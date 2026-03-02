@@ -28,6 +28,10 @@ website/.open-next/
 website/.dev.vars
 website/.env.local
 
+# Cloudflare worker
+cloudflare/worker/node_modules/
+cloudflare/worker/.wrangler/
+
 # Wake word training data
 ml/training_data/
 ml/*.tflite
